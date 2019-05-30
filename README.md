@@ -28,7 +28,7 @@ In MTMC tracking, we calculate the four conditions in loss:
 and match the vehicle pairs having minimum loss.
 
 ## Code strucure
-Under the `/MTMC` folder, there are 3 python files:    
+Under the `/MTMC` folder, there are 3 python files:       
 1.`get_track_info.py`: Integrate the single camera tracking files in each scenario.
 2.`get_bbox_img.py`: Crop the vehicle bouding boxes in integrated single camera tracking files.
 3.`MTMC.py`: Multi-Target Multi-Camera Tracking based on multi-view fusion.
