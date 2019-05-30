@@ -1,14 +1,14 @@
 # AIC19
-AI CITY CHALLENGE 2019 - track 1
-
+[AI City Challenge Workshop at CVPR 2019](https://www.aicitychallenge.org/) - track 1
+This repository contains our source code of Track 1 at the AI City Challenge Workshop at CVPR 2019 .
 ## Introduction
 
 ### AI City Challenge Workshop at CVPR 2019 
 The challenge focus on Intelligent Transportation System (ITS) problems, such as:
 
-#### track1 - City-scale multi-camera vehicle tracking
-#### track2 - City-scale multi-camera vehicle re-identification
-#### track3 - Traffic anomaly detection – Leveraging unsupervised learning to detect anomalies such as lane violation, illegal U-turns, wrong-direction driving, etc.
+#### Track1 - City-scale multi-camera vehicle tracking
+#### Track2 - City-scale multi-camera vehicle re-identification
+#### Track3 - Traffic anomaly detection – Leveraging unsupervised learning to detect anomalies such as lane violation, illegal U-turns, wrong-direction driving, etc.
 
 The pipeline is as follow:
 
