@@ -12,7 +12,7 @@ The challenge focus on Intelligent Transportation System (ITS) problems, such as
 #### Track3 - Traffic anomaly detection 
 
 The pipeline is as follow:  
-![pipeline](https://github.com/yrims/AIC19/tree/master/Images/pipeline.png)
+![pipeline](/AIC19/blob/master/Images/pipeline.png)
 
 ## Code strucure
 
