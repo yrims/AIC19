@@ -9,7 +9,7 @@ The challenge focus on Intelligent Transportation System (ITS) problems, such as
 
 #### Track1 - City-scale multi-camera vehicle tracking
 #### Track2 - City-scale multi-camera vehicle re-identification
-#### Track3 - Traffic anomaly detection – Leveraging unsupervised learning to detect anomalies such as lane violation, illegal U-turns, wrong-direction driving, etc.
+#### Track3 - Traffic anomaly detection 
 
 The pipeline is as follow:
 
