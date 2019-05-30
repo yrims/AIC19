@@ -19,7 +19,7 @@ The pipeline of our system is as follow:
 #### Homography based multi-view fusion
 This method first uses homography matrix to project the vehicles in source videos to real world coordinate(latitude, longitude), then generates the ROI images which mask the high projected error region in each camera, finally, integrates the ROI image to inspect the multi-view fusion result.    
 #### Multi-Target Single-Camera Tracking (MTSC)    
-In MTSC tracking, we use the `DeepSort` and `TC` tracker and adjust the result according the generated ROI. 
+In MTSC tracking, we use the `DeepSort` and `TC` tracker and adjust the result according the generated ROI.    
 The AI City Challenge also provides three MTSC trackers: `TC`, `DeepSort`, `Moana`.    
 
 #### Multi-Target Multi-Camera Tracking (MTMC)
