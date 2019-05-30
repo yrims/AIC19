@@ -12,6 +12,7 @@ The challenge focus on Intelligent Transportation System (ITS) problems, such as
 #### Track2 - City-scale multi-camera vehicle re-identification
 #### Track3 - Traffic anomaly detection 
 
+### Pipeline
 The pipeline of our system is as follow:  
 ![pipeline](https://github.com/yrims/AIC19/blob/master/Images/pipeline.png)
 
