@@ -16,9 +16,10 @@ The pipeline is as follow:
 ## Code strucure
 
 ## Dependency
-- python 3.6.7
-- tensorflow-gpu 1.8.0
-- keras 2.2.4
+- Python 3.6.7
+- Tensorflow-gpu 1.8.0
+- Keras 2.2.4
+- OpenCV 4.0.0
 
 ## Installation
 
