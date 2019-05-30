@@ -11,14 +11,16 @@ The challenge focus on Intelligent Transportation System (ITS) problems, such as
 #### Track2 - City-scale multi-camera vehicle re-identification
 #### Track3 - Traffic anomaly detection 
 
-The pipeline is as follow:
+The pipeline is as follow:  
+![pipeline](https://github.com/yrims/AIC19/blob/master/Images/pipeline.png)
 
 ## Code strucure
 
 ## Dependency
-- python 3.6.7
-- tensorflow-gpu 1.8.0
-- keras 2.2.4
+- Python 3.6.7
+- Tensorflow-gpu 1.8.0
+- Keras 2.2.4
+- OpenCV 4.0.0
 
 ## Installation
 
