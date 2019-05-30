@@ -20,7 +20,7 @@ The pipeline is as follow:
 #### Multi-Target Multi-Camera Tracking 
 
 ## Code strucure
-Under the `/MTMC` folder, there are 3 python files:
+Under the `/MTMC` folder, there are 3 python files: 
 1.`get_track_info.py`:
 2.`get_bbox_img.py`:
 3.`MTMC.py`:
