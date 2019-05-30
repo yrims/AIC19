@@ -1,6 +1,6 @@
 # AIC19
 
-This repository contains our source code of Track 1 at the [AI City Challenge Workshop at CVPR 2019](https://www.aicitychallenge.org/)   
+This repository contains our source code of Track 1 at the [AI City Challenge Workshop at CVPR 2019](https://www.aicitychallenge.org/).   
 The source code of Track 1 is built in Python, and is executed on Windows.
 ## Introduction
 
