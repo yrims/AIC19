@@ -25,7 +25,7 @@ S5_SET = [
 
 # ALL_SET = [S3_SET, S4_SET]
 # ALL_SET = [S5_SET]
-ALL_SET = [S2_SET, S5_SET]
+ALL_SET = [S2_SET]
 
 
 
@@ -52,9 +52,13 @@ class Crop():
     def read_bbox(self):
         for (bbox_txt, height_width) in zip(self.bbox_path, self.vdo_shape):
             row = []
-            img_h = height_width[0]
-            img_w = height_width[1]
+            cam = bbox_txt[-9:-4]
+            roi = cv2.imread( os.path.join('dataset/data', cam, 'roi.jpg'))
+            img_h, img_w = roi.shape[0], roi.shape[1]
+            # img_h = height_width[0]
+            # img_w = height_width[1]
             txt = np.loadtxt(bbox_txt, delimiter=',', dtype=np.int16)
+            
             for info in txt:
                 info[info < 0] = 0
                 frame = info[0]
@@ -63,6 +67,14 @@ class Crop():
                 top = int(info[3])
                 width = int(info[4])
                 height = int(info[5])
+
+                x = int(info[2] + (width/2))
+                y = int(info[3] + height)
+                if x < 0.3 * img_w or x > 0.7 * img_w or y < 0.2 * img_h or y > 0.8 * img_h:
+                    continue
+                if roi[y, x, 0] == 0:
+                    continue
+
                 if top < 10:
                     top = 10
                 if left < 10:

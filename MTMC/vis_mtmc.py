@@ -2,9 +2,10 @@ import os
 import cv2
 import numpy as np
 
-ROOTPATH = 'D:/users/linjian/workspace/AICity19/dataset_track1/'
-TRACKLET = 'tc_tracklet'
-MTMC_bbox_path = ROOTPATH + '/' + TRACKLET + '/MCT'  
+ROOTPATH = 'dataset'
+#TRACKLET = 'tc_tracklet'
+TRACKLET = 'deep_sort'
+MTMC_bbox_path = 'res/' + TRACKLET + '/MCT'  
 
 
 S1_SET = ['S1c01', 'S1c02', 'S1c03', 'S1c04', 'S1c05']
@@ -26,7 +27,8 @@ S5_SET = [
 ]
 
 # ALL_SET = [S1_SET, S2_SET, S3_SET, S4_SET, S5_SET]
-ALL_SET = [S1_SET, S3_SET, S4_SET]
+# ALL_SET = [S1_SET, S3_SET, S4_SET]
+ALL_SET = [S2_SET]
 def find_vdo_path(path, SET):
     vdo_path = []
     height_width_of_video = []
@@ -41,7 +43,7 @@ def find_vdo_path(path, SET):
 
 def read_bbox(MTMC_bbox_path, height_width_of_video, SET):
     bboxes = []
-    f_path = os.path.join(MTMC_bbox_path, 'eval_0504/mtmc_%s.txt'%SET[0][0:2])
+    f_path = os.path.join(MTMC_bbox_path, 'eval_0528/mtmc_%s.txt'%SET[0][0:2])
     txt = np.loadtxt(f_path, delimiter=',')
    
     for info in txt:
@@ -76,7 +78,7 @@ def read_vdo(vdo_path, bbox_path, height_width_of_video, SET):
         cap.set(cv2.CAP_PROP_FRAME_WIDTH, height_width[1])
         
         fourcc = cv2.VideoWriter_fourcc(*'XVID')
-        write_path = os.path.join(MTMC_bbox_path, 'eval_0504/%s_mtmc.avi'%SET[vdo_num])
+        write_path = os.path.join(MTMC_bbox_path, 'eval_0528/%s_mtmc.avi'%SET[vdo_num])
         out = cv2.VideoWriter(write_path, fourcc, 10.0, (height_width[1], height_width[0]))
 
         bbox = bboxes[bboxes[:,0] == int(SET[vdo_num][3:])]
@@ -90,8 +92,8 @@ def read_vdo(vdo_path, bbox_path, height_width_of_video, SET):
             if ret == True:    
                 want = bbox[ bbox[:,2] == frame_num]
                 for want_box in want:
-                    frame = cv2.rectangle(frame, (want_box[3],want_box[4]), (want_box[3]+want_box[5],want_box[4]+want_box[6]), (255,0,0), 10)
-                    frame = cv2.putText(frame, str(want_box[1]), (want_box[3],want_box[4]), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,0), 5)
+                    frame = cv2.rectangle(frame, (want_box[3],want_box[4]), (want_box[3]+want_box[5],want_box[4]+want_box[6]), (255,0,0), 5)
+                    frame = cv2.putText(frame, str(want_box[1]), (want_box[3],want_box[4]), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,0), 3)
                 '''
                     cam_id = int(bbox[bbox_num][0])
                     mtmc_id = int(bbox[bbox_num][1])

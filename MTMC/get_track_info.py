@@ -29,7 +29,8 @@ S5_SET = [
 # TRACKLET = 'tc'
 TRACKLET = 'deep_sort'
 # TRACKLET = 'GroundTruth'
-ALL_SET = [S1_SET, S2_SET, S3_SET, S4_SET, S5_SET]
+# ALL_SET = [S1_SET, S2_SET, S3_SET, S4_SET, S5_SET]
+ALL_SET = [S2_SET]
 # ALL_SET = [S5_SET]
 # SELECT_FILE = 'mtsc_deepsort_mask_rcnn.txt'
 # SELECT_FILE = 'mtsc_tc_mask_rcnn.txt'
@@ -157,14 +158,14 @@ for SET in ALL_SET:
         for info in txt:
             times = (info[0]/10) + time[cam]
             car_id = int(info[1])
-            left = info[2]
-            top = info[3]
-            width = info[4]
-            height = info[5]
+            left = int(info[2])
+            top = int(info[3])
+            width = int(info[4])
+            height = int(info[5])
             # print(car_id)
             x = int(info[2] + (width/2))
             y = int(info[3] + height)
-            if x < 0.2 * img_w or x > 0.8 * img_w or y < 0.1 * img_h or y > 0.9 * img_h:
+            if x < 0.3 * img_w or x > 0.7 * img_w or y < 0.2 * img_h or y > 0.8 * img_h:
                 continue
             if roi[y, x, 0] == 0:
                 continue
@@ -197,14 +198,14 @@ for SET in ALL_SET:
             frame = info[0]
             times = (info[0]/10) + time[cam]
             car_id = int(info[1])
-            left = info[2]
-            top = info[3]
-            width = info[4]
-            height = info[5]
+            left = int(info[2])
+            top = int(info[3])
+            width = int(info[4])
+            height = int(info[5])
             
             x = int(info[2] + (width/2))
             y = int(info[3] + height)
-            if x < 0.2 * img_w or x > 0.8 * img_w or y < 0.1 * img_h or y > 0.9 * img_h:
+            if x < 0.3 * img_w or x > 0.7 * img_w or y < 0.2 * img_h or y > 0.8 * img_h:
                 continue
             if roi[y, x, 0] == 0:
                 continue

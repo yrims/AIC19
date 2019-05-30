@@ -23,8 +23,8 @@ from resnet_152 import resnet152_model
 from custom_layers.scale_layer import Scale
 
 # TRACKER = 'GroundTruth'
-TRACKER = 'tc_tracklet'
-# TRACKER = 'deep_sort'
+# TRACKER = 'tc'
+TRACKER = 'deep_sort'
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--image_size', type=int, default=224, help='image size')
@@ -33,13 +33,13 @@ parser.add_argument('--classes', type=int, default=196, help='number of classes'
 parser.add_argument('--cuda', default=True, help='use GPU computation')
 parser.add_argument('--gpu_device', default='1', help='gpu device')
 parser.add_argument('--model_name', default='ResNet152', help='model choice')
-parser.add_argument('--rowdata_path', default='dataset_track1/%s/bbox_img'%TRACKER, help='data have not be preprocessed')
-parser.add_argument('--data_path', default='dataset_track1/%s/bbox_img_resize'%TRACKER, help='data have been preprocessed')
-parser.add_argument('--data_path_padding', default='dataset_track1/%s/bbox_img_resize_padding'%TRACKER, help='data have been preprocessed with black padding')
-parser.add_argument('--feature_path', default='dataset_track1/%s/bbox_img_feature'%TRACKER, help='path to save img names corresponding to img features.')
-parser.add_argument('--feature_path_padding', default='dataset_track1/%s/bbox_img_feature_padding'%TRACKER, help='path to save img features with padding.')
-parser.add_argument('--color_his_path', default='dataset_track1/%s/bbox_img_histogram'%TRACKER, help='path to save img names corresponding to img features.')
-parser.add_argument('--weight_path', default='AICity19_Project/Tracking/MTMC/weights/VeRI_epoch5_v4.h5', help='path to weight.')
+parser.add_argument('--rowdata_path', default='res/%s/bbox_img'%TRACKER, help='data have not be preprocessed')
+parser.add_argument('--data_path', default='res/%s/bbox_img_resize'%TRACKER, help='data have been preprocessed')
+parser.add_argument('--data_path_padding', default='res/%s/bbox_img_resize_padding'%TRACKER, help='data have been preprocessed with black padding')
+parser.add_argument('--feature_path', default='res/%s/bbox_img_feature'%TRACKER, help='path to save img names corresponding to img features.')
+parser.add_argument('--feature_path_padding', default='res/%s/bbox_img_feature_padding'%TRACKER, help='path to save img features with padding.')
+parser.add_argument('--color_his_path', default='res/%s/bbox_img_histogram'%TRACKER, help='path to save img names corresponding to img features.')
+parser.add_argument('--weight_path', default='Img_model/weights/VeRI_epoch5_v4.h5', help='path to weight.')
 opt = parser.parse_args()
 print(opt)
 
@@ -60,8 +60,8 @@ S5_SET = [
     'S5c26', 'S5c27', 'S5c28', 'S5c29',
     'S5c33', 'S5c34', 'S5c35', 'S5c36'
 ]
-# ALL_SET = [S2_SET, S5_SET]
-ALL_SET = [S1_SET, S3_SET, S4_SET]
+ALL_SET = [S2_SET]
+# ALL_SET = [S1_SET, S3_SET, S4_SET]
 # ALL_SET = [S2_SET, S5_SET]
 # ALL_SET = [S5_SET]
 # ALL_SET = [S1_SET]

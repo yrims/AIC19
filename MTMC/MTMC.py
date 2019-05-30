@@ -32,15 +32,18 @@ S5_SET = [
     'S5c26', 'S5c27', 'S5c28', 'S5c29',
     'S5c33', 'S5c34', 'S5c35', 'S5c36'
 ]
+
 # ALL_SET = [S1_SET, S2_SET, S3_SET, S4_SET, S5_SET]
-# ALL_SET = [S2_SET, S5_SET]
-ALL_SET = [S1_SET, S3_SET, S4_SET]
-TRACKLET = 'tc_tracklet'
+ALL_SET = [S2_SET]
+# ALL_SET = [S1_SET, S3_SET, S4_SET]
+
+# TRACKLET = 'tc'
 # TRACKLET = 'GroundTruth'
-# MODEL = 'res152'
+TRACKLET = 'deep_sort'
+
 MODEL = 'res152_VeRI_color'
-# MODEL = 'mgn_veri'
-EVALDIR = 'eval_0510_v2'
+
+EVALDIR = 'eval_0528'
 
 RES = 'res/%s'%TRACKLET
 img_path = RES + '/bbox_img_resize_padding'
@@ -48,7 +51,8 @@ img_path_no_padding = RES + '/bbox_img_resize'
 feature_path_padding = RES + '/bbox_img_feature_padding'
 feature_path = RES + '/bbox_img_feature'
 histogram_path = RES + '/bbox_img_histogram'
-save_path = 'res/MCT'
+save_path = 'res/%s/MCT' % TRACKLET
+
 VERBOSE = 0 # 0(only epoch), 1(normal), 2(detail print)
 
 class MTMC():
@@ -59,8 +63,6 @@ class MTMC():
         self.num_cam = len(self.SET)
         self.all_cam_num = 40
         self.PATH = img_path_no_padding
-        # self.PATH = img_path
-        # self.RESIZE_PATH = img_path_no_padding
         self.HISTOGRAM_PATH = histogram_path
         self.sct = None
         self.feature = []
@@ -77,8 +79,6 @@ class MTMC():
         self.mtmc_loss_table = None
         self.mtmc_id = {}
         self.mtmc_file = []
-
-
         
     def load_sct(self):
         SCT_file = os.path.join(RES, '%s.txt'%self.SET[0][0:2])
@@ -89,12 +89,11 @@ class MTMC():
         print('SCT shape: ', self.sct.shape)
         
     def load_feature(self):
-        # feature_dir = feature_path_padding + '/%s_%s'%(self.SET[0][0:2], MODEL)
         feature_dir = feature_path + '/%s_%s'%(self.SET[0][0:2], MODEL)
         feature_list = os.listdir(feature_dir)
         for fname in feature_list:    
             self.feature.append(np.load(feature_dir + '/' + fname))
-        print('feature length: ',len(self.feature))
+        print('feature length: ', len(self.feature))
 
     def trajectory_classify(self):
         for i in range(self.sct.shape[0]):
@@ -108,7 +107,7 @@ class MTMC():
             start_time, end_time = row[10], row[11]
 
             key = '%sc%02d_%05d'%(self.SET[0][0:2], cam, sct_id)
-            # print('key:', key)
+            
             if key not in self.trajectory_dict.keys():
                 self.trajectory_dict[key] = [(lat, lon, time, frame, left, top, width, height, cam, 
                                               start_x, start_y, end_x, end_y, start_time, end_time )]
@@ -117,7 +116,7 @@ class MTMC():
                                             start_x, start_y, end_x, end_y, start_time, end_time ))
 
         self.trajectory_num = len(self.trajectory_dict.keys())
-        print('total trajectory number: %d'%len(self.trajectory_dict.keys()))
+        print('total trajectory number: %d' % len(self.trajectory_dict.keys()))
 
     def trajectory_sampling(self):
         for _, key in enumerate(self.trajectory_dict.keys()):
@@ -146,7 +145,7 @@ class MTMC():
                         else:
                             break
                 sp = sp[0:self.trajectory_selected_num]
-                # print('num of trajectory 1 %d: '%i, len(sp))
+                
             else:
                 sp = traj
                 while len(sp) < self.trajectory_selected_num:
@@ -162,10 +161,10 @@ class MTMC():
                         else:
                             break
                 sp = sp[0:self.trajectory_selected_num]
-                # print('num of trajectory 2 %d: '%i, len(sp))
+                
             self.trajectory_sample_dict[key] = sp   
             # sp = np.array(sp, dtype=float)
-            # np.savetxt('./dataset_track1/%s/traj_data/%s/%s.txt'%(TRACKLET, self.SET[0][0:2], key), sp[:, 0:3], fmt='%.10f,%.10f,%f,%f,%d,%d,%d,%d,%d', delimiter=",", newline='\n')
+            # np.savetxt('res/%s/traj_data/%s/%s.txt'%(TRACKLET, self.SET[0][0:2], key), sp[:, 0:3], fmt='%.10f,%.10f,%f,%f,%d,%d,%d,%d,%d', delimiter=",", newline='\n')
            
     def tracklet_classify(self):
         all_tracklet_img = os.listdir(self.PATH + '/%s'%self.SET[0][0:2])
@@ -206,31 +205,24 @@ class MTMC():
         end_time = self.sct[:,11]
         left, top, width, height = self.sct[:,12], self.sct[:,13], self.sct[:,14], self.sct[:,15]
         self.mtmc_id_table = np.chararray((self.tracklet_num, self.num_cam), itemsize=11, unicode=True)
-        # self.mtmc_id_table[:] = ''
         self.mtmc_loss_table = np.ones((self.tracklet_num, self.num_cam))
         self.mtmc_loss_table[:] = 999999999
         print('id_table shape:',self.mtmc_id_table.shape)
         print('loss_table shape:',self.mtmc_loss_table.shape)
         # feature_dir = feature_path_padding + '/%s_%s'%(self.SET[0][0:2], MODEL)
         feature_dir = feature_path + '/%s_%s' % (self.SET[0][0:2], MODEL)
-        histogram_dir = histogram_path + '/%s' % self.SET[0][0:2]
         center_idx = int(0.75 * self.trajectory_selected_num)
 
         # getting tracklet a
         for a, key_a in enumerate(self.tracklet_dict.keys()):
-            # load feature a 
-            # print('key a:',key_a)
-            feature_a = np.reshape(np.load(feature_dir + '/%s.npy'%self.tracklet_dict[key_a][0]), 2048)
-            np.append(feature_a, np.reshape(np.load(feature_dir + '/%s.npy'%self.tracklet_dict[key_a][1]), 2048))
-            np.append(feature_a, np.reshape(np.load(feature_dir + '/%s.npy'%self.tracklet_dict[key_a][2]), 2048))
-            # print('feature a shape:', feature_a.shape)
-            # print('feature a :', feature_a)
-            # load color histogram
-            histogram_a = np.reshape(np.load(histogram_dir + '/%s.npy'%self.tracklet_dict[key_a][0]), 768)
-            np.append(histogram_a, np.reshape(np.load(histogram_dir + '/%s.npy'%self.tracklet_dict[key_a][1]), 768))
-            np.append(histogram_a, np.reshape(np.load(histogram_dir + '/%s.npy'%self.tracklet_dict[key_a][2]), 768))
             
-            # print('shape fa:', feature_a.shape)
+            # load feature a 
+            try:
+                feature_a = np.reshape(np.load(feature_dir + '/%s.npy'%self.tracklet_dict[key_a][0]), 2048)
+                np.append(feature_a, np.reshape(np.load(feature_dir + '/%s.npy'%self.tracklet_dict[key_a][1]), 2048))
+                np.append(feature_a, np.reshape(np.load(feature_dir + '/%s.npy'%self.tracklet_dict[key_a][2]), 2048))
+            except IndexError:
+                continue
             
             if VERBOSE == 0:
                 print('epoch :%4d/%4d'%((a+1), self.tracklet_num), end='\r')
@@ -239,19 +231,20 @@ class MTMC():
             cam_a = int(key_a[3:5]) - 1
             
             # center of trajectory in car a (lat, long, time)
-            traj_a = self.trajectory_sample_dict[key_a]
+            try:
+                    traj_a = self.trajectory_sample_dict[key_a]
+            except KeyError:
+                continue
             center_traj_a = traj_a[center_idx]
 
             # initialize variable
             count = 1
             min_loss_total = np.ones(self.num_cam)
             min_loss_img = np.ones(self.num_cam)
-            min_loss_his = np.ones(self.num_cam)
             min_loss_traj = np.ones(self.num_cam)
             min_loss_dir = np.ones(self.num_cam)
             min_loss_tt = np.ones(self.num_cam)
             min_loss_total[:] = 999999999
-            min_loss_his[:] = 999999999
             min_loss_img[:] = 999999999
             min_loss_traj[:] = 999999999
             min_loss_dir[:] = 999999999
@@ -260,32 +253,34 @@ class MTMC():
             
             # getting tracklet b
             for b, key_b in enumerate(self.tracklet_dict.keys()):
-                
+            
                 # camera id
                 cam_b = int(key_b[3:5]) - 1
-                
+                               
                 # center of trajectory in car b (lat, long, time)
-                traj_b = self.trajectory_sample_dict[key_b]
+                try:
+                    traj_b = self.trajectory_sample_dict[key_b]
+                except KeyError:
+                    continue
                 center_traj_b = traj_b[center_idx]
 
                 # distance between center coordinate a and center coordinate b
                 dis_ab = gp_dist_to_meter(center_traj_a[0], center_traj_a[1], center_traj_b[0], center_traj_b[1])
-                #print('key b:',key_b)
                 
                 # time difference
                 time_dif_ab = abs(center_traj_a[2] - center_traj_b[2])
+                
                 # camparing with only different camera and in 800 meters and in 3 minutes.
                 # if cam_b != cam_a and dis_ab < 800 and time_dif_ab < 300: 
                 if cam_b != cam_a and dis_ab < 400 and time_dif_ab < 30:     
-                    # load feature a 
-                    feature_b = np.reshape(np.load(feature_dir + '/%s.npy'%self.tracklet_dict[key_b][0]), 2048)
-                    np.append(feature_b, np.reshape(np.load(feature_dir + '/%s.npy'%self.tracklet_dict[key_b][1]), 2048))
-                    np.append(feature_b, np.reshape(np.load(feature_dir + '/%s.npy'%self.tracklet_dict[key_b][2]), 2048))
                     
-                    # load color histogram
-                    #histogram_b = np.reshape(np.load(histogram_dir + '/%s.npy'%self.tracklet_dict[key_b][0]), 768)
-                    #np.append(histogram_b, np.reshape(np.load(histogram_dir + '/%s.npy'%self.tracklet_dict[key_b][1]), 768))
-                    #np.append(histogram_b, np.reshape(np.load(histogram_dir + '/%s.npy'%self.tracklet_dict[key_b][2]), 768))
+                    # load feature b
+                    try: 
+                        feature_b = np.reshape(np.load(feature_dir + '/%s.npy'%self.tracklet_dict[key_b][0]), 2048)
+                        np.append(feature_b, np.reshape(np.load(feature_dir + '/%s.npy'%self.tracklet_dict[key_b][1]), 2048))
+                        np.append(feature_b, np.reshape(np.load(feature_dir + '/%s.npy'%self.tracklet_dict[key_b][2]), 2048))
+                    except IndexError:
+                        continue
 
                     # print('key_%d:'%count, key_b)
 
@@ -309,25 +304,16 @@ class MTMC():
 
                     if (self.SET == S1_SET or self.SET == S2_SET):
                         if time_dif_ab < 15:
-                            
-                            
                             loss_img = lambda_img * loss_appearance(feature_a, feature_b)
-                            #loss_his =loss_appearance_his(histogram_a, histogram_b)
                             # loss_traj = lambda_traj * loss_trajectory_smooth(traj_a, traj_b)
                             loss_dir = lambda_dir * loss_direction(self.trajectory_dict[key_a][0][9], self.trajectory_dict[key_a][0][10],
                                                     self.trajectory_dict[key_a][0][11], self.trajectory_dict[key_a][0][12],
                                                     self.trajectory_dict[key_b][0][9], self.trajectory_dict[key_b][0][10],
                                                     self.trajectory_dict[key_b][0][11], self.trajectory_dict[key_b][0][12])
-                            '''
-                            loss_tt = loss_travel_time(self.trajectory_dict[key_a][0][9], self.trajectory_dict[key_a][0][10],
-                                                    self.trajectory_dict[key_a][0][11], self.trajectory_dict[key_a][0][12],
-                                                    self.trajectory_dict[key_b][0][9], self.trajectory_dict[key_b][0][10],
-                                                    self.trajectory_dict[key_a][0][13], self.trajectory_dict[key_a][0][14], 
-                                                    self.trajectory_dict[key_a][0][3], self.trajectory_dict[key_b][0][3])
-                            '''
+                            
                             loss_tt, velocity_a ,velocity_b = loss_travel_time(dis_ab, time_dif_ab, traj_a[int(0.75*self.trajectory_selected_num)], traj_a[int(0.95*self.trajectory_selected_num)],
                                                                                 traj_b[int(0.75*self.trajectory_selected_num)], traj_b[int(0.95*self.trajectory_selected_num)])
-                            # loss_tt = lambda_tt * abs(time_dif_ab)
+
                             loss_tt = lambda_tt * loss_tt
                             loss_total = loss_img + loss_dir +  loss_tt 
                             if VERBOSE == 2:
@@ -335,24 +321,20 @@ class MTMC():
                                 print('a:%s with b:%s' % (key_a, key_b))
                                 print('total: %.5f, img: %.5f, dir: %.5f, tt: %.5f, vel_a: %.5f, vel_b: %.5f' % (loss_total, loss_img, loss_dir, loss_tt, velocity_a, velocity_b))
                                 print('-------------------------------------------------------------------------')
+                            
                             # replace the tracklet having min loss
                             if loss_total < min_loss_total[idx_b] and loss_img < 1.5 and loss_dir < 0.3 and loss_tt < 0.36:
                                 min_loss_total[idx_b] = loss_total
-                                # min_loss_total[idx_b] = loss_img
                                 # min_loss_traj[idx_b] = loss_traj
                                 min_loss_img[idx_b] = loss_img
                                 min_loss_dir[idx_b] = loss_dir
                                 min_loss_tt[idx_b] = loss_tt
                                 min_id[idx_b] = key_b
                                 min_cam = int(min_id[idx_b][3:5]) - 1
-                                # print('replace the tracklet having min loss!')
                             count += 1
 
                     else:
-                        
-                        # loss_img = loss_appearance(feature_a, feature_b) + loss_appearance(histogram_a, histogram_b)
                         loss_img = 3 * loss_appearance(feature_a, feature_b)
-                        # loss_his = loss_appearance_his(histogram_a, histogram_b)
                         # loss_traj = loss_trajectory_smooth(traj_a, traj_b)
                         loss_dir = 0.5 * lambda_dir *loss_direction(self.trajectory_dict[key_a][0][9], self.trajectory_dict[key_a][0][10],
                                                     self.trajectory_dict[key_a][0][11], self.trajectory_dict[key_a][0][12],
@@ -362,36 +344,35 @@ class MTMC():
                                                                           traj_b[int(0.75*self.trajectory_selected_num)], traj_b[int(0.95*self.trajectory_selected_num)])
                         loss_tt = loss_tt * 0.1
                         loss_total = loss_img + loss_dir + loss_tt
+                        
                         if VERBOSE == 2:
                                 print('-------------------------------------------------------------------------')
                                 print('a:%s with b:%s' % (key_a, key_b))
                                 print('total: %.5f, img: %.5f, dir: %.5f, tt: %.5f, vel_a: %.5f, vel_b: %.5f' % (loss_total, loss_img, loss_dir, loss_tt, velocity_a, velocity_b))
                                 print('-------------------------------------------------------------------------')
                         
-                        # print('img: %.5f, dir: %.5f, tt: %.5f' % (loss_img, loss_dir, loss_tt))
                         # replace the tracklet having min loss
                         if loss_total < min_loss_total[idx_b] and loss_img < 0.7 and loss_dir < 1.5 and loss_tt < 0.6:
                             min_loss_total[idx_b] = loss_total
-                            # min_loss_total[idx_b] = loss_img
                             min_loss_img[idx_b] = loss_img
                             # min_loss_dir[idx_b] = loss_dir
                             min_loss_tt[idx_b] = loss_tt
                             min_id[idx_b] = key_b
                             min_cam = int(min_id[idx_b][3:5]) - 1
-                            # print('replace the tracklet having min loss!')
                         count += 1
+            
             if VERBOSE >= 1:
                 print('######################################################################################')
                 print('%s is associated to | ' %(key_a), end='')
+            
             for c, _ in enumerate(min_loss_img):
                 if self.SET == S1_SET or self.SET == S2_SET:
                     if min_loss_img[c] < self.mtmc_loss_table[a, c] :
                         self.mtmc_loss_table[a, c] = min_loss_img[c]
                         self.mtmc_id_table[a, c] = min_id[c]
-                    # print('min loss:', min_loss[c])
                     if VERBOSE >= 1:
                         print(min_id[c], end=' ')
-                    # print('min id:', min_id[c])
+                    
                 else:
                     if min_loss_img[c] < self.mtmc_loss_table[a, c]:
                         self.mtmc_loss_table[a, c] = min_loss_img[c]
@@ -400,27 +381,7 @@ class MTMC():
                         print(min_id[c], end=' ')
             if VERBOSE >= 1:
                 print('\n######################################################################################')
-            '''           
-            for c, _ in enumerate(min_loss_total):
-                if self.SET == S1_SET or self.SET == S2_SET:
-                    if min_loss_total[c] < self.mtmc_loss_table[a, c] and min_loss_img[c] < 0.5 and min_loss_dir[c] < 1 and min_loss_tt < 10:
-                        self.mtmc_loss_table[a, c] = min_loss_total[c]
-                        self.mtmc_id_table[a, c] = min_id[c]
-                    # print('min loss:', min_loss[c])
-                    # print('min id:', min_id[c])
-                else:
-                    if min_loss_total[c] < self.mtmc_loss_table[a, c] and min_loss_img[c] < 0.5 and min_loss_dir[c] < 1.2 and min_loss_tt < 30:
-                        self.mtmc_loss_table[a, c] = min_loss_total[c]
-                        self.mtmc_id_table[a, c] = min_id[c]
-            '''
-    '''
-    def table_preprocess(self):
-        for key in self.tracklet_dict:
-            self.mtmc_id[key] = 0
-        for i, key in enumerate(self.tracklet_dict.keys()):
             
-    '''        
-
     def id_assign(self):
         if (self.mtmc_id_table is None) and (self.mtmc_loss_table is None):
             self.mtmc_id_table = np.loadtxt('./mtmc_id_table.txt', dtype=str, delimiter=',')
@@ -456,26 +417,24 @@ class MTMC():
                     if row[j] < 999999999:
                         t_name = self.mtmc_id_table[i, j]
 
-
-
         for i, key in enumerate(self.tracklet_dict.keys()):
             row = self.mtmc_loss_table[i]
-            # print('row:', row)
+            
             if self.mtmc_id[key] == 0 and np.count_nonzero(row == 999999999) < self.num_cam: # haven't assigned ID and have matched other tracklets.
                 self.mtmc_id[key] = id_count
                 for j in range(self.num_cam):
                     if row[j] < 999999999:
                         t_name = self.mtmc_id_table[i, j]
-                        # print('t_name:',t_name)
+                        
                         self.mtmc_id[t_name] = id_count
-                        # print('mtmc_id[%s] :'%t_name, self.mtmc_id[t_name])
+                        
                 id_count += 1
             elif self.mtmc_id[key] > 0:
                 row = self.mtmc_loss_table[i]
                 for j in range(self.num_cam):
                     if row[j] < 999999999:
                         t_name = self.mtmc_id_table[i, j]
-                        # print('t_name:',t_name)
+                        
                         self.mtmc_id[t_name] = self.mtmc_id[key]
 
         print(self.mtmc_id)
@@ -487,6 +446,7 @@ class MTMC():
         # trajectory format:
         # lat, lon, time, frame, left, top, width, height
         # lat, lon, time, frame, left, top, width, height, cam, start_x, start_y, end_x, end_y, start_time, end_time 
+        
         for i, key in enumerate(self.tracklet_dict.keys()):
             if self.mtmc_id[key] > 0:
                 for j, item in enumerate(self.trajectory_dict[key]):
@@ -512,8 +472,7 @@ def gp_dist_to_meter (lat1, lon1, lat2, lon2):
     d = R * c * 1000 #meters
     return d    
 
-def loss_appearance(fa, fb):
-    # Y = cdist(fa[np.newaxis, :], fb[np.newaxis, :], 'braycurtis') 
+def loss_appearance(fa, fb): 
     loss = cdist(fa[np.newaxis, :], fb[np.newaxis, :], 'cosine') 
     return loss
 
@@ -531,8 +490,7 @@ def loss_trajectory_smooth(traj_a, traj_b):
     traj_b_norm = traj_b / norm_b
     
     loss = np.mean(np.square((traj_a - traj_b)))
-    # print('traj_a shape:', traj_a.shape)
-    # print('traj_b shape:', traj_b.shape)
+
     # loss = cdist(traj_a_norm, traj_b_norm, 'euclidean')
     # loss = np.mean(loss)
     # print('loss traj shape:', loss.shape)
@@ -594,7 +552,9 @@ class Eval():
             np.savetxt(save_path + '/' + EVALDIR + '/' + 'c%03d_train.txt'%int(cam[3:]), cam_txt, fmt='%d,%d,%d,%d,%d,%d,%d,%d')
 
 if __name__ == '__main__':
+    
     tStart = time.time()
+    
     for SET in ALL_SET:
         mtmc = MTMC(SET)
         mtmc.load_sct()
@@ -608,12 +568,7 @@ if __name__ == '__main__':
         mtmc.save_mtmc()
         EVAL = Eval(SET)
         EVAL.load_txt()
-        EVAL.split_txt()
-        
-        # MTMC = MTMC(SET)
-        #SCT = load_SCT(RES, SET)
-        #feature = load_feature(feature_path, SET)
-        # feature_coorespond = load_feature_coorespond_file(feature_path, SET)
-        #cal_loss(SCT, feature, SET)
+        EVAL.split_txt()   
+    
     tEnd = time.time()
     print("It cost %f sec" % (tEnd - tStart))
