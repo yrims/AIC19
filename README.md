@@ -12,6 +12,7 @@ The challenge focus on Intelligent Transportation System (ITS) problems, such as
 #### Track3 - Traffic anomaly detection 
 
 The pipeline is as follow:
+![pipeline](AIC19/Images/pipeline.png)
 
 ## Code strucure
 
