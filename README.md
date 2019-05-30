@@ -16,8 +16,15 @@ The pipeline of our system is as follow:
 ![pipeline](https://github.com/yrims/AIC19/blob/master/Images/pipeline.png)
 
 #### Homography based multi-view fusion
-#### Multi-Target Single-Camera Tracking
-#### Multi-Target Multi-Camera Tracking 
+This method first uses homography matrix to project the vehicles in source videos to real world coordinate(latitude, longitude), then generates the ROI images which mask the high projected error region in each camera, finally, integrates the ROI image to inspect the multi-view fusion result.    
+#### Multi-Target Single-Camera Tracking (MTSC)    
+In MTSC tracking, we use the `DeepSort` and `TC` tracker and adjust the result according the generated ROI.
+The AI City Challenge also provides three MTSC trackers: `TC`, `DeepSort`, `Moana`.    
+
+#### Multi-Target Multi-Camera Tracking (MTMC)
+In MTMC tracking, we calculate the four conditions in loss:    
+`image similarity`, `trajectory consistency`, `driving direction`, `travel time`,
+and match the vehicle pairs having minimum loss.
 
 ## Code strucure
 Under the `/MTMC` folder, there are 3 python files:    
