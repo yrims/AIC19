@@ -1,6 +1,7 @@
 # AIC19
-[AI City Challenge Workshop at CVPR 2019](https://www.aicitychallenge.org/) - track 1    
-This repository contains our source code of Track 1 at the AI City Challenge Workshop at CVPR 2019 .
+[AI City Challenge Workshop at CVPR 2019](https://www.aicitychallenge.org/)   
+This repository contains our source code of Track 1 - City-scale multi-camera vehicle tracking at the AI City Challenge Workshop at CVPR 2019. 
+The source code of Track 1 is built in Python, and is executed on Windows.
 ## Introduction
 
 ### AI City Challenge Workshop at CVPR 2019 
