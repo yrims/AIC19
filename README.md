@@ -27,15 +27,16 @@ In MTMC tracking, we calculate the four conditions in loss:
 `image similarity`, `trajectory consistency`, `driving direction`, `travel time`,
 and match the vehicle pairs having minimum loss.
 
-## Code strucure
-Under the `/MTMC` folder, there are 3 python files:       
+## Code structure
+Under the `./MTMC` folder, there are 3 python files:       
 1. `get_track_info.py`: Integrate the single camera tracking files in each scenario.    
 2. `get_bbox_img.py`: Crop the vehicle bouding boxes in integrated single camera tracking files.  
 3. `MTMC.py`: Multi-Target Multi-Camera Tracking based on multi-view fusion.  
 
-Under the `/Img_model` folder, there are 2 python files:
+Under the `./Img_model` folder, there are 2 python files:
 1. `train_cnn.py`: Train the vehicle classification model for feature extraction.    
-2. `feature_extract.py`: Extract the feature on the cropped vehicle bboxes.    
+2. `feature_extract.py`: Extract the feature on the cropped vehicle bboxes.  
+
 
 ## Dependency
 - Python 3.6.7
