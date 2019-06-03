@@ -1,0 +1,3 @@
+[submodule "AICity-track2-Re-id"]
+	path = AICity-track2-Re-id
+	url = https://github.com/DavisonHu/AICity-track2-Re-id
