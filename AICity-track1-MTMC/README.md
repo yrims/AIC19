@@ -46,4 +46,11 @@ Under the `./dataset` folder:
 - Keras 2.2.4
 - OpenCV 4.0.0
 
-## Reference
+## Citation
+```
+@ARTICLE{Chang19AI,
+    author = {{Ming-Ching Chang and Jiayi Wei and Zheng-An Zhu and Yan-Ming Chen and Chan-Shuo Hu and Ming-Xiu Jiang and Chen-Kuo Chiang},
+    title = "{{AI} {C}ity {C}hallenge 2019 -- {C}ity-Scale Video Analytics for Smart Transportation}",
+    year = 2019,
+}
+```
