@@ -14,7 +14,7 @@ The challenge focus on Intelligent Transportation System (ITS) problems, such as
 
 ### Pipeline
 The pipeline of our system is as follow:  
-![pipeline](https://github.com/yrims/AIC19/blob/master/Images/pipeline.png)
+![pipeline](https://github.com/yrims/AIC19/blob/master/AICImages/pipeline.png)
 
 #### Homography based multi-view fusion
 This method first uses homography matrix to project the vehicles in source videos to real world coordinate(latitude, longitude), then generates the ROI images which mask the high projected error region in each camera, finally, integrates the ROI image to inspect the multi-view fusion result.    
