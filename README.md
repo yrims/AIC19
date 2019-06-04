@@ -1,7 +1,7 @@
 # AIC19
 AI City Challenge Workshop at CVPR 2019
 
-This repository contains our source code of Track 1 & Track 2 on the [AI City Challenge Workshop at CVPR 2019](https://www.aicitychallenge.org/).
+This repository contains our source code of Track 1 & Track 2 of the [AI City Challenge Workshop at CVPR 2019](https://www.aicitychallenge.org/).
 
 The track 1 code is developed in Python and Keras.   
 
