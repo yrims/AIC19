@@ -12,9 +12,13 @@ The challenge focus on Intelligent Transportation System (ITS) problems, such as
 #### Track 2 - City-scale multi-camera vehicle re-identification
 #### Track 3 - Traffic anomaly detection 
 
+   
+
 ### Pipeline
+
 The pipeline of our system is as follow:  
 ![pipeline](https://github.com/yrims/AIC19/blob/master/AICity-track1-MTMC/Images/pipeline.png)
+The Multi-Target Multi-Camera (MTMC) vehicle tracking approach is based on Deep Learning.    
 
 #### Homography based multi-view fusion
 This method first uses homography matrix to project the vehicles in source videos to real world coordinate(latitude, longitude), then generates the ROI images which mask the high projected error region in each camera, finally, integrates the ROI image to inspect the multi-view fusion result.    
