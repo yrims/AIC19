@@ -44,6 +44,12 @@ Under the `./Img_model` folder, there are 2 python files:
 Under the `./dataset` folder:    
 - Please download the AI City Challenge dataset from [here](https://www.aicitychallenge.org/2019-data-sets/), and put the directories `S1c01`~`S5c36` to `./dataset/data`.
 
+## Step
+1. run `./MTMCget_track_info.py`    
+2. run `./MTMC/get_bbox_img.py`    
+3. run `./MTMC/feature_extract.py`    
+4. run `./MTMC/MTMC.py`
+
 ## Dependency
 - Python 3.6.7
 - Tensorflow-gpu 1.8.0
