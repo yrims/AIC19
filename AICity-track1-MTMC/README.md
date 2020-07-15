@@ -39,7 +39,10 @@ Under the `./MTMC` folder, there are 3 python files:
 
 Under the `./Img_model` folder, there are 2 python files:
 1. `train_cnn.py`: Train the vehicle classification model for feature extraction.    
-2. `feature_extract.py`: Extract the feature on the cropped vehicle bboxes.  
+2. `feature_extract.py`: Extract the feature on the cropped vehicle bboxes.
+
+The weight file can be downloaded [here](https://drive.google.com/file/d/1n10bwPYGC6PpsgHdYuSjuGejhfKb7KF2/view?usp=sharing)
+
 
 Under the `./dataset` folder:    
 - Please download the AI City Challenge dataset from [here](https://www.aicitychallenge.org/2019-data-sets/), and put the directories `S1c01`~`S5c36` to `./dataset/data`.
